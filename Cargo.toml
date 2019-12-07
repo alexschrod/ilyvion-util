@@ -1,0 +1,13 @@
+[package]
+name = "ilyvion-util"
+version = "0.1.0"
+authors = ["Alexander Krivács Schrøder <alexschrod@gmail.com>"]
+edition = "2018"
+license = "Apache-2.0 OR MIT"
+description = "Collection of utility functions and types for use in my personal projects."
+
+[dependencies]
+num-traits = { version = "0.2", optional = true }
+
+[features]
+permutation = ["num-traits"]
