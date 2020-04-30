@@ -3,7 +3,9 @@ use std::ops::{Deref, DerefMut};
 
 /// A smart pointer that either owns or mutably borrows.
 pub enum Ob<'b, T> {
+    /// Contains the owned value
     Owned(T),
+    /// Contains the borrowed value
     Borrowed(&'b mut T),
 }
 
@@ -17,6 +19,7 @@ impl<'b, T> Ob<'b, T> {
             _ => Err(self),
         }
     }
+
     /// Extracts the borrowed data.
     ///
     /// Returns `self` in `Err` if it's not borrowed.
@@ -30,14 +33,14 @@ impl<'b, T> Ob<'b, T> {
     fn inner_ref(&self) -> &T {
         match self {
             Ob::Owned(owned) => owned,
-            Ob::Borrowed(borrowed) => borrowed,
+            Ob::Borrowed(borrowed) => *borrowed,
         }
     }
 
     fn inner_mut(&mut self) -> &mut T {
         match self {
             Ob::Owned(owned) => owned,
-            Ob::Borrowed(borrowed) => borrowed,
+            Ob::Borrowed(borrowed) => *borrowed,
         }
     }
 }

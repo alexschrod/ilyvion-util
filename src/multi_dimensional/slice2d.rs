@@ -17,6 +17,7 @@ use std::ops::{Index, IndexMut};
 ///
 /// assert_eq!(values, [0, 1, 0, 2, 0, 3, 0, 4]);
 /// ```
+#[derive(Debug)]
 pub struct Window2D<T> {
     rows: usize,
     columns: usize,
@@ -69,7 +70,7 @@ impl<'b, T> Window2D<&'b [T]> {
     /// Providing incorrect values for `rows` and `columns` will most likely lead to run-time panics
     /// due to indexing outside the range of the slice.
     ///
-    /// Using this constructor gives you an essentially zero-cost abstraction.  
+    /// Using this constructor gives you an essentially zero-cost abstraction.
     pub fn new_ref_unchecked(raw: &'b [T], rows: usize, columns: usize) -> Self {
         Self { raw, rows, columns }
     }

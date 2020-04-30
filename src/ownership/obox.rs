@@ -3,7 +3,9 @@ use std::ops::{Deref, DerefMut};
 
 /// A smart pointer that either owns or mutably borrows.
 pub enum OBox<'b, T: ?Sized> {
+    /// Contains the owned value
     Owned(Box<T>),
+    /// Contains the borrowed value
     Borrowed(&'b mut T),
 }
 
@@ -31,14 +33,14 @@ impl<'b, T: ?Sized> OBox<'b, T> {
     fn inner_ref(&self) -> &T {
         match self {
             OBox::Owned(owned) => owned,
-            OBox::Borrowed(borrowed) => borrowed,
+            OBox::Borrowed(borrowed) => *borrowed,
         }
     }
 
     fn inner_mut(&mut self) -> &mut T {
         match self {
             OBox::Owned(owned) => owned,
-            OBox::Borrowed(borrowed) => borrowed,
+            OBox::Borrowed(borrowed) => *borrowed,
         }
     }
 }
