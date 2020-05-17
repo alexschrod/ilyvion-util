@@ -1,0 +1,11 @@
+[package]
+name = "borrowned"
+version = "0.1.0"
+authors = ["Alexander Krivács Schrøder <alexschrod@gmail.com>"]
+edition = "2018"
+license = "Apache-2.0 OR MIT"
+description = "Own-borrow types that let you use both borrowed and owned values interchangeably."
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]

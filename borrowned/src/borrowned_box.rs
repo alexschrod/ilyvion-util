@@ -5,21 +5,40 @@ use std::hash::{Hash, Hasher};
 use std::ops::{Deref, DerefMut};
 
 /// A smart pointer that either owns or mutably borrows a value.
+///
+/// # Example
+///
+/// ```
+/// use borrowned::BorrownedBox;
+///
+/// fn print_text(text: &BorrownedBox<'_, String>) {
+///     println!("{}", text);
+/// }
+///
+/// let owned = BorrownedBox::Owned(Box::new("hello".to_string()));
+/// let mut owned2 = Box::new("world".to_string());
+/// let borrowed = BorrownedBox::Borrowed(&mut *owned2);
+///
+/// print_text(&owned);
+/// print_text(&borrowed);
+/// print_text(&owned2.into());
+///
+/// ```
 #[derive(Debug)]
-pub enum Borrowned<'b, T> {
+pub enum BorrownedBox<'b, T: ?Sized> {
     /// Contains the owned value
-    Owned(T),
+    Owned(Box<T>),
     /// Contains the borrowed value
     Borrowed(&'b mut T),
 }
 
-impl<'b, T> Borrowned<'b, T> {
+impl<'b, T: ?Sized> BorrownedBox<'b, T> {
     /// Extracts the owned data.
     ///
     /// Returns `self` in `Err` if it's not owned.
-    pub fn try_into_owned(self) -> Result<T, Self> {
+    pub fn try_into_box(self) -> Result<Box<T>, Self> {
         match self {
-            Borrowned::Owned(owned) => Ok(owned),
+            BorrownedBox::Owned(owned) => Ok(owned),
             _ => Err(self),
         }
     }
@@ -29,27 +48,27 @@ impl<'b, T> Borrowned<'b, T> {
     /// Returns `self` in `Err` if it's not borrowed.
     pub fn try_into_borrowed(self) -> Result<&'b mut T, Self> {
         match self {
-            Borrowned::Borrowed(borrowed) => Ok(borrowed),
+            BorrownedBox::Borrowed(borrowed) => Ok(borrowed),
             _ => Err(self),
         }
     }
 
     fn inner_ref(&self) -> &T {
         match self {
-            Borrowned::Owned(owned) => owned,
-            Borrowned::Borrowed(borrowed) => *borrowed,
+            BorrownedBox::Owned(owned) => owned,
+            BorrownedBox::Borrowed(borrowed) => *borrowed,
         }
     }
 
     fn inner_mut(&mut self) -> &mut T {
         match self {
-            Borrowned::Owned(owned) => owned,
-            Borrowned::Borrowed(borrowed) => *borrowed,
+            BorrownedBox::Owned(owned) => owned,
+            BorrownedBox::Borrowed(borrowed) => *borrowed,
         }
     }
 }
 
-impl<'b, T> Deref for Borrowned<'b, T> {
+impl<'b, T: ?Sized> Deref for BorrownedBox<'b, T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -57,46 +76,46 @@ impl<'b, T> Deref for Borrowned<'b, T> {
     }
 }
 
-impl<'b, T> DerefMut for Borrowned<'b, T> {
+impl<'b, T: ?Sized> DerefMut for BorrownedBox<'b, T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         self.inner_mut()
     }
 }
 
-impl<'b, T> Borrow<T> for Borrowned<'b, T> {
+impl<'b, T: ?Sized> Borrow<T> for BorrownedBox<'b, T> {
     fn borrow(&self) -> &T {
         self.inner_ref()
     }
 }
 
-impl<'b, T> BorrowMut<T> for Borrowned<'b, T> {
+impl<'b, T: ?Sized> BorrowMut<T> for BorrownedBox<'b, T> {
     fn borrow_mut(&mut self) -> &mut T {
         self.inner_mut()
     }
 }
 
-impl<'b, T> AsRef<T> for Borrowned<'b, T> {
+impl<'b, T: ?Sized> AsRef<T> for BorrownedBox<'b, T> {
     fn as_ref(&self) -> &T {
         self.inner_ref()
     }
 }
 
-impl<'b, T> AsMut<T> for Borrowned<'b, T> {
+impl<'b, T: ?Sized> AsMut<T> for BorrownedBox<'b, T> {
     fn as_mut(&mut self) -> &mut T {
         self.inner_mut()
     }
 }
 
-impl<'b, T: Clone> Clone for Borrowned<'b, T> {
+impl<'b, T: Clone + ?Sized> Clone for BorrownedBox<'b, T> {
     fn clone(&self) -> Self {
         match self {
-            Borrowned::Owned(owned) => Borrowned::Owned(owned.clone()),
-            Borrowned::Borrowed(borrowed) => Borrowned::Owned((*borrowed).clone()),
+            BorrownedBox::Owned(owned) => BorrownedBox::Owned(owned.clone()),
+            BorrownedBox::Borrowed(borrowed) => BorrownedBox::Owned(Box::new((*borrowed).clone())),
         }
     }
 }
 
-impl<'b, T: PartialEq> PartialEq for Borrowned<'b, T> {
+impl<'b, T: PartialEq + ?Sized> PartialEq for BorrownedBox<'b, T> {
     fn eq(&self, other: &Self) -> bool {
         let b_self = self.inner_ref();
         let b_other = other.inner_ref();
@@ -105,9 +124,9 @@ impl<'b, T: PartialEq> PartialEq for Borrowned<'b, T> {
     }
 }
 
-impl<'b, T: Eq> Eq for Borrowned<'b, T> {}
+impl<'b, T: Eq + ?Sized> Eq for BorrownedBox<'b, T> {}
 
-impl<'b, T: PartialOrd> PartialOrd for Borrowned<'b, T> {
+impl<'b, T: PartialOrd + ?Sized> PartialOrd for BorrownedBox<'b, T> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         let b_self = self.inner_ref();
         let b_other = other.inner_ref();
@@ -116,7 +135,7 @@ impl<'b, T: PartialOrd> PartialOrd for Borrowned<'b, T> {
     }
 }
 
-impl<'b, T: Ord> Ord for Borrowned<'b, T> {
+impl<'b, T: Ord> Ord for BorrownedBox<'b, T> {
     fn cmp(&self, other: &Self) -> Ordering {
         let b_self = self.inner_ref();
         let b_other = other.inner_ref();
@@ -125,43 +144,55 @@ impl<'b, T: Ord> Ord for Borrowned<'b, T> {
     }
 }
 
-impl<'b, T: Hash> Hash for Borrowned<'b, T> {
+impl<'b, T: Hash + ?Sized> Hash for BorrownedBox<'b, T> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         let b_self = self.inner_ref();
         b_self.hash(state);
     }
 }
 
-impl<'b, T: Default> Default for Borrowned<'b, T> {
+impl<'b, T: Default + ?Sized> Default for BorrownedBox<'b, T> {
     fn default() -> Self {
-        Self::Owned(T::default())
+        Self::Owned(Box::default())
     }
 }
 
-impl<'b, T: fmt::Display> fmt::Display for Borrowned<'b, T> {
+impl<'b, T: fmt::Display + ?Sized> fmt::Display for BorrownedBox<'b, T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Display::fmt(self.inner_ref(), f)
     }
 }
 
+impl<'b, T: ?Sized> From<Box<T>> for BorrownedBox<'b, T> {
+    fn from(owned: Box<T>) -> Self {
+        Self::Owned(owned)
+    }
+}
+
+impl<'b, T: ?Sized> From<&'b mut T> for BorrownedBox<'b, T> {
+    fn from(borrowed: &'b mut T) -> Self {
+        Self::Borrowed(borrowed)
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::ownership::Borrowned;
+    use crate::BorrownedBox;
 
     #[test]
     fn into_owned_gives_owned_when_owned() {
         let hw = "Hello World".to_string();
-        let ob = Borrowned::Owned(hw.clone());
-        let hw2 = ob.try_into_owned();
+        let ob = BorrownedBox::Owned(Box::new(hw.clone()));
+        let hw2 = ob.try_into_box();
 
-        assert_eq!(hw2, Ok(hw));
+        assert_eq!(hw2, Ok(Box::new(hw)));
     }
 
     #[test]
     fn into_owned_gives_self_when_not_owned() {
         let mut hw = "Hello World".to_string();
-        let ob = Borrowned::Borrowed(&mut hw);
-        let hw2 = ob.try_into_owned();
+        let ob = BorrownedBox::Borrowed(&mut hw);
+        let hw2 = ob.try_into_box();
 
         assert!(hw2.is_err());
     }
@@ -169,7 +200,7 @@ mod tests {
     #[test]
     fn into_borrowed_gives_borrowed_when_borrowed() {
         let mut hw = "Hello World".to_string();
-        let ob = Borrowned::Borrowed(&mut hw);
+        let ob = BorrownedBox::Borrowed(&mut hw);
         let hw2 = ob.try_into_borrowed();
 
         assert!(hw2.is_ok());
@@ -178,7 +209,7 @@ mod tests {
     #[test]
     fn into_borrowed_gives_self_when_not_borrowed() {
         let hw = "Hello World".to_string();
-        let ob = Borrowned::Owned(hw);
+        let ob = BorrownedBox::Owned(Box::new(hw));
         let hw2 = ob.try_into_borrowed();
 
         assert!(hw2.is_err());
