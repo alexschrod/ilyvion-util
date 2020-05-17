@@ -2,8 +2,8 @@
 //! Differs from `Cow` mainly in that it borrows mutably, and doesn't convert the borrowed type
 //! into the owned type on write.
 
-mod ob;
-mod obox;
+mod borrowned;
+mod borrowned_box;
 
-pub use ob::*;
-pub use obox::*;
+pub use borrowned::*;
+pub use borrowned_box::*;
