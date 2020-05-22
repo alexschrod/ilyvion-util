@@ -2,6 +2,7 @@
 //! This is `f32` and `f64`.
 
 use shrinkwraprs::Shrinkwrap;
+use std::cmp::Ordering;
 use std::fmt::Debug;
 
 /// Trait that lets you generalize over types that have a NaN.
@@ -34,6 +35,14 @@ impl<T: NanType> NonNan<T> {
     pub fn new(val: T) -> Self {
         assert!(!val.is_nan(), "NaN values are not allowed");
         Self(val)
+    }
+}
+
+impl<T: NanType> Eq for NonNan<T> {}
+
+impl<T: NanType> Ord for NonNan<T> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.partial_cmp(other).unwrap()
     }
 }
 
