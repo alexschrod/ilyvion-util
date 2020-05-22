@@ -23,8 +23,8 @@ where
 {
     /// Creates a new `Cache<F, V>` initialized with the given `calculation_fn` function.
     /// The function  will not be called until the result of the calculation is needed.
-    pub fn new(calculation_fn: F) -> Cache<F, V> {
-        Cache {
+    pub fn new(calculation_fn: F) -> Self {
+        Self {
             calculation_fn: Some(calculation_fn),
             value: None,
         }
@@ -65,8 +65,8 @@ where
 {
     /// Creates a new `KeyedCache<F, V>` initialized with the given `calculation_fn` function.
     /// The function  will not be called until the result of a calculation is needed.
-    pub fn new(calculation_fn: F) -> KeyedCache<F, K, V> {
-        KeyedCache {
+    pub fn new(calculation_fn: F) -> Self {
+        Self {
             calculation_fn,
             values: HashMap::new(),
         }

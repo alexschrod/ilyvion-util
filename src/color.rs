@@ -54,7 +54,7 @@ impl From<RGB> for HSV {
         let value = max;
         let delta = max - min;
         if delta < 0.00001 {
-            return HSV::new(0., 0., value);
+            return Self::new(0., 0., value);
         }
 
         let saturation = delta / max;
@@ -73,7 +73,7 @@ impl From<RGB> for HSV {
             hue += 360.;
         }
 
-        HSV::new(hue, saturation, value)
+        Self::new(hue, saturation, value)
     }
 }
 
@@ -82,7 +82,7 @@ impl From<HSV> for RGB {
         let saturation = (hsv.saturation * 255.) as u8;
         let value = (hsv.value * 255.) as u8;
         if saturation == 0 {
-            return RGB::new(value, value, value);
+            return Self::new(value, value, value);
         }
 
         let mut hue = hsv.hue;
@@ -105,7 +105,7 @@ impl From<HSV> for RGB {
             _ => (value, p, q),
         };
 
-        RGB::new(red, green, blue)
+        Self::new(red, green, blue)
     }
 }
 
