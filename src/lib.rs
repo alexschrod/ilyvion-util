@@ -64,6 +64,7 @@
 pub mod cache;
 pub mod color;
 pub mod file;
+pub mod map_any;
 pub mod multi_dimensional;
 pub mod non_nan;
 pub mod ownership;
