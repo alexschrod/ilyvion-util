@@ -65,6 +65,7 @@ pub mod map_any;
 pub mod multi_dimensional;
 pub mod non_nan;
 pub mod ownership;
+pub mod string_extensions;
 
 #[cfg(feature = "permutation")]
 pub mod permutation;
