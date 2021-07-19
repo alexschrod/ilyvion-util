@@ -207,7 +207,12 @@ mod tests {
         );
         assert!((gray_hsv.hue - 0.).abs() < f64::EPSILON);
         assert!((gray_hsv.saturation - 0.).abs() < f64::EPSILON);
-        assert!(gray_hsv.value - 0.5 < f64::EPSILON);
+        assert!(
+            (gray_hsv.value - 0.5).abs() < 0.01,
+            "{}, {}",
+            gray_hsv.value,
+            (gray_hsv.value - 0.5).abs()
+        );
     }
 
     #[test]

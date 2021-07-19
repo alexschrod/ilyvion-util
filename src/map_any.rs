@@ -1,3 +1,6 @@
+//! Adds a `map()` method to any type, allowing for inline conversion from one
+//! type to another.
+
 /// Adds a `map()` method to any type, allowing for inline conversion from one
 /// type to another.
 pub trait MapAny: Sized {

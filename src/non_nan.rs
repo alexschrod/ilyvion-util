@@ -40,6 +40,7 @@ impl<T: NanType> NonNan<T> {
 
 impl<T: NanType> Eq for NonNan<T> {}
 
+#[allow(clippy::derive_ord_xor_partial_ord)]
 impl<T: NanType> Ord for NonNan<T> {
     fn cmp(&self, other: &Self) -> Ordering {
         self.partial_cmp(other).unwrap()

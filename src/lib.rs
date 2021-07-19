@@ -29,7 +29,7 @@
 #![deny(clippy::expl_impl_clone_on_copy)]
 #![deny(clippy::explicit_into_iter_loop)]
 #![deny(clippy::explicit_iter_loop)]
-#![deny(clippy::filter_map)]
+#![deny(clippy::manual_filter_map)]
 #![deny(clippy::filter_map_next)]
 #![deny(clippy::manual_find_map)]
 #![deny(clippy::if_not_else)]

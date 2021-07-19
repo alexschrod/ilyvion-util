@@ -107,8 +107,8 @@ mod tests {
             counter += 1;
         });
 
-        sut.value_mut();
-        sut.value_mut();
+        let _ = sut.value_mut();
+        let _ = sut.value_mut();
 
         assert_eq!(counter, 1);
     }
@@ -130,7 +130,7 @@ mod tests {
     fn cache_value_is_available_after_first_access() {
         let mut sut = Cache::new(|| 42);
 
-        sut.value_mut();
+        let _ = sut.value_mut();
 
         assert_eq!(Some(&42), sut.value());
     }
@@ -154,10 +154,10 @@ mod tests {
             x + 5
         });
 
-        sut.value_mut(5);
-        sut.value_mut(5);
-        sut.value_mut(10);
-        sut.value_mut(10);
+        let _ = sut.value_mut(5);
+        let _ = sut.value_mut(5);
+        let _ = sut.value_mut(10);
+        let _ = sut.value_mut(10);
 
         assert_eq!(counter, 2);
     }
@@ -183,7 +183,7 @@ mod tests {
     fn keyed_cache_value_is_available_after_first_access() {
         let mut sut = KeyedCache::new(|k: &i32| *k + 42);
 
-        sut.value_mut(69);
+        let _ = sut.value_mut(69);
 
         assert_eq!(Some(&111), sut.value(&69));
     }

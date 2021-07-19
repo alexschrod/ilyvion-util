@@ -1,4 +1,3 @@
-use core::fmt;
 use std::ops::{Index, IndexMut};
 
 /// This struct represents a two-dimensional window into a one-dimensional `Vec`. This is
