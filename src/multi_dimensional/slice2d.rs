@@ -5,7 +5,7 @@ use std::ops::{Index, IndexMut};
 /// evenly into `rows` based on its length, or by taking `rows` and `columns` directly, trusting
 /// that the caller provided correct values. The latter option provides a zero-cost abstraction.
 ///
-/// # Examples
+/// # Example
 /// ```
 /// # use ilyvion_util::multi_dimensional::Window2D;
 /// let mut values = [0u32; 8];
@@ -19,9 +19,9 @@ use std::ops::{Index, IndexMut};
 /// ```
 #[derive(Debug)]
 pub struct Window2D<T> {
+    raw: T,
     rows: usize,
     columns: usize,
-    raw: T,
 }
 
 impl<'b, T> Window2D<&'b mut [T]> {
@@ -85,6 +85,14 @@ impl<T> Index<usize> for Window2D<&'_ [T]> {
     }
 }
 
+impl<T> Index<(usize, usize)> for Window2D<&'_ [T]> {
+    type Output = T;
+
+    fn index(&self, index: (usize, usize)) -> &Self::Output {
+        &self[index.0][index.1]
+    }
+}
+
 impl<T> Index<usize> for Window2D<&'_ mut [T]> {
     type Output = [T];
 
@@ -98,5 +106,70 @@ impl<T> IndexMut<usize> for Window2D<&'_ mut [T]> {
     fn index_mut(&mut self, row: usize) -> &mut Self::Output {
         assert!(row < self.rows);
         &mut self.raw[row * self.columns..][..self.columns]
+    }
+}
+
+impl<T> Index<(usize, usize)> for Window2D<&'_ mut [T]> {
+    type Output = T;
+
+    fn index(&self, index: (usize, usize)) -> &Self::Output {
+        &self[index.0][index.1]
+    }
+}
+
+impl<T> IndexMut<(usize, usize)> for Window2D<&'_ mut [T]> {
+    fn index_mut(&mut self, index: (usize, usize)) -> &mut Self::Output {
+        &mut self[index.0][index.1]
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn indexing_works_correctly() {
+        let mut values = [0, 1, 2, 3, 4, 5, 6, 7];
+        let window = Window2D::new_ref(&values, 2);
+
+        assert_eq!(window[0], [0, 1]);
+        assert_eq!(window[1], [2, 3]);
+        assert_eq!(window[2], [4, 5]);
+        assert_eq!(window[3], [6, 7]);
+
+        assert_eq!(window[(0, 0)], 0);
+        assert_eq!(window[(0, 1)], 1);
+        assert_eq!(window[(1, 0)], 2);
+        assert_eq!(window[(1, 1)], 3);
+        assert_eq!(window[(2, 0)], 4);
+        assert_eq!(window[(2, 1)], 5);
+        assert_eq!(window[(3, 0)], 6);
+        assert_eq!(window[(3, 1)], 7);
+
+        let mut window = Window2D::new_mut(&mut values, 2);
+        for y in 0..4 {
+            for x in 0..2 {
+                window[y][x] = 2 * (3 - y) + (1 - x);
+            }
+        }
+        assert_eq!(window[0], [7, 6]);
+        assert_eq!(window[1], [5, 4]);
+        assert_eq!(window[2], [3, 2]);
+        assert_eq!(window[3], [1, 0]);
+		
+        for y in 0..4 {
+            for x in 0..2 {
+                window[(y, x)] *= 2;
+            }
+        }
+
+        assert_eq!(window[(0, 0)], 14);
+        assert_eq!(window[(0, 1)], 12);
+        assert_eq!(window[(1, 0)], 10);
+        assert_eq!(window[(1, 1)], 8);
+        assert_eq!(window[(2, 0)], 6);
+        assert_eq!(window[(2, 1)], 4);
+        assert_eq!(window[(3, 0)], 2);
+        assert_eq!(window[(3, 1)], 0);
     }
 }

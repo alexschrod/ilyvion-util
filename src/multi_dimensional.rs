@@ -1,5 +1,5 @@
-//! Provides methods for treating a one-dimensional array/slice as if it were a
-//! two-dimensional slice.
+//! Provides functionality for treating a one-dimensional [`Vec`]/[`slice`] as if it were
+//! two-dimensional.
 
 mod slice2d;
 mod vec2d;
