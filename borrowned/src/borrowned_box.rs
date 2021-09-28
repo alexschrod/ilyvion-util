@@ -140,7 +140,7 @@ impl<'b, T: Ord> Ord for BorrownedBox<'b, T> {
         let b_self = self.inner_ref();
         let b_other = other.inner_ref();
 
-        b_self.cmp(&b_other)
+        b_self.cmp(b_other)
     }
 }
 
