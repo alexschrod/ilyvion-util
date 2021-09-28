@@ -7,14 +7,12 @@ license = "Apache-2.0 OR MIT"
 description = "Collection of utility functions and types for use in my personal projects."
 
 [dependencies]
-borrowned = { version = "0.1", path = "borrowned" }
-shrinkwraprs = "0.2"
+borrowned = { version = "0.1", path = "borrowned", optional = true }
+shrinkwraprs = "0.3"
 num-traits = { version = "0.2", optional = true }
 
 [features]
 permutation = ["num-traits"]
 
 [workspace]
-members = [
-    "borrowned"
-]
+members = ["borrowned"]

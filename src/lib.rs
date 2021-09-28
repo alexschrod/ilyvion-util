@@ -53,7 +53,7 @@
 //
 // Warn (try not to do this)
 //#![warn(clippy::must_use_candidate)]
-#![warn(clippy::pub_enum_variant_names)]
+#![warn(clippy::enum_variant_names)]
 #![warn(clippy::shadow_unrelated)]
 #![warn(clippy::similar_names)]
 #![warn(clippy::too_many_lines)]
@@ -64,8 +64,10 @@ pub mod file;
 pub mod map_any;
 pub mod multi_dimensional;
 pub mod non_nan;
-pub mod ownership;
 pub mod string_extensions;
+
+#[cfg(feature = "borrowned")]
+pub mod ownership;
 
 #[cfg(feature = "permutation")]
 pub mod permutation;
