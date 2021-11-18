@@ -71,3 +71,6 @@ pub mod ownership;
 
 #[cfg(feature = "permutation")]
 pub mod permutation;
+
+#[cfg(feature = "chrono")]
+pub mod chrono;
