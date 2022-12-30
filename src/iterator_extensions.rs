@@ -63,4 +63,4 @@ pub trait IteratorExtensions: Iterator {
     }
 }
 
-impl<T: ?Sized> IteratorExtensions for T where T: Iterator {}
+impl<T: ?Sized + Iterator> IteratorExtensions for T {}

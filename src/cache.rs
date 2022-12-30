@@ -87,10 +87,10 @@ where
 
     /// Gets a shared reference to the contained calculated value based on the `key`
     /// if it has already been calculated.
-    pub fn value<Q: ?Sized>(&self, key: &Q) -> Option<&V>
+    pub fn value<Q>(&self, key: &Q) -> Option<&V>
     where
         K: Borrow<Q>,
-        Q: Hash + Eq,
+        Q: Hash + Eq + ?Sized,
     {
         self.values.get(key)
     }
