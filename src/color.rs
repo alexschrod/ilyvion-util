@@ -87,7 +87,7 @@ impl From<Hsv> for Rgb {
 
         let mut hue = hsv.hue;
         if hue > 360.0 {
-            hue = 0.
+            hue = 0.;
         };
         hue /= 60.0;
         let i = hue as u32;

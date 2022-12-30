@@ -1,5 +1,6 @@
 //! Ilyvion's hodgepodge collection of useful utility types and functions.
 
+// <editor-fold desc="Coding conventions" defaultstate="collapsed">
 // Coding conventions
 //
 // Deny (don't do this)
@@ -10,6 +11,7 @@
 #![deny(rust_2018_idioms)]
 #![deny(trivial_numeric_casts)]
 #![deny(unsafe_code)]
+#![deny(rustdoc::broken_intra_doc_links)]
 //#![deny(unused)]
 //
 // Warn (try not to do this)
@@ -17,7 +19,6 @@
 #![warn(missing_debug_implementations)]
 #![warn(missing_docs)]
 #![warn(variant_size_differences)]
-#![warn(unused_results)]
 //
 // Clippy conventions
 //
@@ -31,7 +32,6 @@
 #![deny(clippy::explicit_iter_loop)]
 #![deny(clippy::manual_filter_map)]
 #![deny(clippy::filter_map_next)]
-#![deny(clippy::manual_find_map)]
 #![deny(clippy::if_not_else)]
 #![deny(clippy::invalid_upcast_comparisons)]
 #![deny(clippy::items_after_statements)]
@@ -50,13 +50,17 @@
 #![deny(clippy::unused_self)]
 #![deny(clippy::use_self)] // Sometimes gives false positives; feel free to disable.
 #![deny(clippy::used_underscore_binding)]
+#![deny(clippy::semicolon_if_nothing_returned)]
 //
 // Warn (try not to do this)
-//#![warn(clippy::must_use_candidate)]
+#![warn(clippy::must_use_candidate)]
 #![warn(clippy::enum_variant_names)]
 #![warn(clippy::shadow_unrelated)]
 #![warn(clippy::similar_names)]
 #![warn(clippy::too_many_lines)]
+#![warn(clippy::unused_async)]
+#![warn(clippy::inconsistent_struct_constructor)]
+// </editor-fold>
 
 pub mod cache;
 pub mod color;
