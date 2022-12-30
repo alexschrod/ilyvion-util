@@ -8,10 +8,10 @@ description = "Collection of utility functions and types for use in my personal 
 
 [dependencies]
 borrowned = { version = "0.1", path = "borrowned", optional = true }
-shrinkwraprs = "0.3"
-num-traits = { version = "0.2", optional = true }
 chrono = { version = "0.4", optional = true }
+num-traits = { version = "0.2", optional = true }
 paste = "1.0"
+shrinkwraprs = "0.3"
 
 [dev-dependencies]
 float_eq = "1.0"
