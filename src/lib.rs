@@ -64,6 +64,7 @@ pub mod file;
 pub mod float_extensions;
 pub mod iterator_extensions;
 pub mod map_any;
+pub mod map_extensions;
 pub mod multi_dimensional;
 pub mod non_nan;
 pub mod string_extensions;
