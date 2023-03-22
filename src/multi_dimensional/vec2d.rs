@@ -58,6 +58,7 @@ impl<T> Vec2D<T> {
     /// # Panics
     ///
     /// If the length of `raw` cannot be divided evenly into `column`s
+    #[must_use]
     pub fn from(raw: Vec<T>, columns: usize) -> Self {
         let rows = raw.len() / columns;
         if raw.len() % columns != 0 {
@@ -73,11 +74,13 @@ impl<T> Vec2D<T> {
     /// due to indexing outside the range of the [`Vec`].
     ///
     /// Using this constructor gives you an essentially zero-cost abstraction.
+    #[must_use]
     pub fn from_unchecked(raw: Vec<T>, rows: usize, columns: usize) -> Self {
         Self { raw, rows, columns }
     }
 
     /// Unwraps this `Vec2D<T>`, returning the underlying [`Vec`].
+    #[must_use]
     pub fn into_inner(self) -> Vec<T> {
         self.raw
     }
@@ -90,6 +93,7 @@ impl<T: Default> Vec2D<T> {
     /// # Panics
     ///
     /// If `rows * columns > usize::MAX`.
+    #[must_use]
     pub fn new(rows: usize, columns: usize) -> Self {
         Self::new_with(rows, columns, |_, _| T::default())
     }

@@ -146,30 +146,30 @@ mod tests {
         assert_eq!(window[(3, 0)], 6);
         assert_eq!(window[(3, 1)], 7);
 
-        let mut window = Window2D::new_mut(&mut values, 2);
+        let mut window_mut = Window2D::new_mut(&mut values, 2);
         for y in 0..4 {
             for x in 0..2 {
-                window[y][x] = 2 * (3 - y) + (1 - x);
+                window_mut[y][x] = 2 * (3 - y) + (1 - x);
             }
         }
-        assert_eq!(window[0], [7, 6]);
-        assert_eq!(window[1], [5, 4]);
-        assert_eq!(window[2], [3, 2]);
-        assert_eq!(window[3], [1, 0]);
-		
+        assert_eq!(window_mut[0], [7, 6]);
+        assert_eq!(window_mut[1], [5, 4]);
+        assert_eq!(window_mut[2], [3, 2]);
+        assert_eq!(window_mut[3], [1, 0]);
+
         for y in 0..4 {
             for x in 0..2 {
-                window[(y, x)] *= 2;
+                window_mut[(y, x)] *= 2;
             }
         }
 
-        assert_eq!(window[(0, 0)], 14);
-        assert_eq!(window[(0, 1)], 12);
-        assert_eq!(window[(1, 0)], 10);
-        assert_eq!(window[(1, 1)], 8);
-        assert_eq!(window[(2, 0)], 6);
-        assert_eq!(window[(2, 1)], 4);
-        assert_eq!(window[(3, 0)], 2);
-        assert_eq!(window[(3, 1)], 0);
+        assert_eq!(window_mut[(0, 0)], 14);
+        assert_eq!(window_mut[(0, 1)], 12);
+        assert_eq!(window_mut[(1, 0)], 10);
+        assert_eq!(window_mut[(1, 1)], 8);
+        assert_eq!(window_mut[(2, 0)], 6);
+        assert_eq!(window_mut[(2, 1)], 4);
+        assert_eq!(window_mut[(3, 0)], 2);
+        assert_eq!(window_mut[(3, 1)], 0);
     }
 }

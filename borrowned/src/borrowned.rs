@@ -56,14 +56,14 @@ impl<'b, T> Borrowned<'b, T> {
     fn inner_ref(&self) -> &T {
         match self {
             Borrowned::Owned(owned) => owned,
-            Borrowned::Borrowed(borrowed) => *borrowed,
+            Borrowned::Borrowed(borrowed) => borrowed,
         }
     }
 
     fn inner_mut(&mut self) -> &mut T {
         match self {
             Borrowned::Owned(owned) => owned,
-            Borrowned::Borrowed(borrowed) => *borrowed,
+            Borrowned::Borrowed(borrowed) => borrowed,
         }
     }
 }
