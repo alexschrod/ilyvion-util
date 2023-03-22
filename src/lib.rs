@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "better-docs", feature(doc_cfg, decl_macro, rustc_attrs))]
+
 //! Ilyvion's hodgepodge collection of useful utility types and functions.
 
 // <editor-fold desc="Coding conventions" defaultstate="collapsed">
@@ -74,10 +76,17 @@ pub mod non_nan;
 pub mod string_extensions;
 
 #[cfg(feature = "borrowned")]
+#[cfg_attr(feature = "better-docs", doc(cfg(feature = "borrowned")))]
 pub mod ownership;
 
 #[cfg(feature = "permutation")]
+#[cfg_attr(feature = "better-docs", doc(cfg(feature = "permutation")))]
 pub mod permutation;
 
 #[cfg(feature = "chrono")]
+#[cfg_attr(feature = "better-docs", doc(cfg(feature = "chrono")))]
 pub mod chrono;
+
+#[cfg(feature = "environment")]
+#[cfg_attr(feature = "better-docs", doc(cfg(feature = "environment")))]
+pub mod environment;
