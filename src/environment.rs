@@ -2,6 +2,7 @@
 
 use std::env::VarError;
 use std::error::Error;
+use std::str::FromStr;
 use thiserror::Error;
 
 // These re-exports are macro implementation details and not part of the
@@ -97,6 +98,17 @@ well_located_public_macro! {
     /// println!("{}", environment::path());
     /// ```
     ///
+    /// # Conversions
+    ///
+    /// As mentioned in the introductions, there's a [`EnvironmentConverter`] trait that is
+    /// responsible for doing value conversions. This trait can be implemented for your own
+    /// types if you'd like to convert an environment variable directly to a type.
+    ///
+    /// Out of the box, the supported types are:
+    /// * The integers and floating point numbers. These use their [`FromStr`] implementation.
+    /// * `bool`. For this one, the mapping is `"on" | "true" | "yes" | "1" => true`,
+    /// `"off" | "false" | "no" | "0" => false`.
+    ///
     pub macro_rules! define_environment {
         (
             $($vis:vis $environment_variable:ident()$(: $ty:ty)?);+ $(;)?
@@ -128,7 +140,7 @@ well_located_public_macro! {
                         [<$environment_variable:upper>].as_deref().expect(concat!(
                             "environment variable '",
                             ::std::stringify!([<$environment_variable:upper>]),
-                            "' to be present"))
+                            "' was not present"))
                     }
 
                     /// Returns the value of the environment variable `
@@ -147,7 +159,7 @@ well_located_public_macro! {
                             [< try_ $environment_variable _ $ty>]().expect(concat!(
                                 "environment variable '",
                                 ::std::stringify!([<$environment_variable:upper>]),
-                                "' to be present and be a valid value for type ",
+                                "' was either not present or not a valid value for the type ",
                                 ::std::stringify!($ty),
                             ))
                         }
@@ -188,10 +200,13 @@ pub enum EnvironmentConverterError<E> {
     ConversionError(E),
 }
 
-#[doc(hidden)]
+/// The trait responsible for converting environment variable contents into other types.
 pub trait EnvironmentConverter: Sized {
+    /// The error type produces if the conversion fails.
     type ConversionError: Error;
 
+    /// Converts the `value` into a value of this type. The name of the variable is provided in
+    /// `name` to facilitate improved error reporting.
     fn try_convert(name: &'static str, value: &'static str) -> Result<Self, Self::ConversionError>;
 }
 
@@ -211,6 +226,25 @@ impl EnvironmentConverter for bool {
         })
     }
 }
+
+macro_rules! number_converter_impl {
+    ($($num:ty)*) => {
+        $(
+            impl EnvironmentConverter for $num {
+                type ConversionError = <Self as std::str::FromStr>::Err;
+
+                fn try_convert(
+                    _name: &'static str,
+                    value: &'static str,
+                ) -> Result<Self, Self::ConversionError> {
+                    FromStr::from_str(value)
+                }
+            }
+        )*
+    };
+}
+
+number_converter_impl!(u8 u16 u32 u64 u128 i8 i16 i32 i64 i128 f32 f64);
 
 /// The error type for converting to `bool`.
 #[derive(Clone, Copy, Debug, Error)]
