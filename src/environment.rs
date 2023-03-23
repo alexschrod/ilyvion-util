@@ -57,25 +57,28 @@ macro_rules! well_located_public_macro {(
 )}
 
 well_located_public_macro! {
-    /// This macro declares a module that contains utility functions for reading the given environment
+    /// This macro declares utility functions for reading the given environment
     /// variables. For a given environment variable, two functions are generated, one that is named
-    /// the same as the declared environment variable that panics if the environment variable isn't
+    /// the same as the declared environment variable which panics if the environment variable isn't
     /// present and one prefixed with `try_` that returns a `Result` (see the return value of
-    /// [`std::env::var`] for details on the error.)
+    /// [`std::env::var`] for details on the error.) If a `: $type` is added to the definition, two
+    /// additional functions get added: one with the suffix `_$type` and one with the prefix `try_`
+    /// and the suffix `_$type`. These functions behave the same as the two regular functions, but
+    /// they invoke [`EnvironmentConverter::try_convert`] to attempt to convert the text in the
+    /// environment variable to the given type. The one prefixed with `try_` passes the eventual
+    /// conversion error on in a [`EnvironmentConverterError`], the unprefixed one panics instead.
     ///
     /// The syntax of the macro is:
     /// ```rust
     /// # /*
     /// define_environment! {
-    ///     mod $environment_module_name {
-    ///         $environment_variable_name1();
-    ///         $environment_variable_name2();
-    ///     }
+    ///     $environment_variable_name1();
+    ///     $environment_variable_name2(): $type;
     /// }
     /// # */
     /// ```
     ///
-    /// Both the module name and the variable names accept visibility modifiers like `pub` and
+    /// The variable names accept visibility modifiers like `pub` and
     /// `pub(crate)`. The variable name should be given in lower case, and will become the name of
     /// the panicking utility function discussed above. This name will also be the name of the
     /// environment variable that is read, but converted to uppercase. (I.e. a variable name of `path`
@@ -83,10 +86,10 @@ well_located_public_macro! {
     ///
     /// # Examples
     /// ```rust
-    /// use ilyvion_util::environment::define_environment;
+    /// pub(crate) mod environment {
+    ///     use ilyvion_util::environment::define_environment;
     ///
-    /// define_environment! {
-    ///     pub(crate) mod environment {
+    ///     define_environment! {
     ///         pub path();
     ///     }
     /// }
